@@ -17,15 +17,16 @@ class AuthController extends Controller
     {
         //form validation
         $request->validate(
-            ['text_username' => 'required|email',
-            'text_password' => 'required|min:6|max:16'
+            [
+                'text_username' => 'required|email',
+                'text_password' => 'required|min:6|max:16'
             ],
             [
                 'text_username.required' => 'O username é obrigatorio',
                 'text_username.email' => 'O username deve ser um email válido',
                 'text_password.required' => 'A password é obrigatória',
                 'text_password.min' => 'A password deve ter pelo menos :min caracteres',
-                'text_password.max' => 'A password deve ter pelo menos :max caracteres'
+                'text_password.max' => 'A password deve ter no máximo :max caracteres'
             ]
         );
 
@@ -53,7 +54,7 @@ class AuthController extends Controller
             ]
         ]);
 
-        echo 'LOGIN COM SUCESSO';
+        return redirect()->to('/');
 
     }
 
