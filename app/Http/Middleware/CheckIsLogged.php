@@ -16,8 +16,8 @@ class CheckIsLogged
     public function handle(Request $request, Closure $next): Response
     {
 
-        if (!session('user')) {
-            return redirect('/login');
+        if (!session()->has('user')) {
+            return redirect()->route('login');
         }
 
         return $next($request);

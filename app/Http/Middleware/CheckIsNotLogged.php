@@ -15,8 +15,8 @@ class CheckIsNotLogged
      */
     public function handle(Request $request, Closure $next): Response
     {
-        if (session('user')) {
-            return redirect('/');
+        if (session()->has('user')) {
+            return redirect()->route('home');
         }
 
         return $next($request);

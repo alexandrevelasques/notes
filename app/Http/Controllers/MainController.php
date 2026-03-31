@@ -5,19 +5,15 @@ namespace App\Http\Controllers;
 use App\Models\Note;
 use App\Models\User;
 use App\Services\Operations;
-use Illuminate\Contracts\Encryption\DecryptException;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Crypt;
 
 class MainController extends Controller
 {
     public function index()
     {
         $id = session('user.id');
-        $notes = User::find($id)->notes()->whereNull('deleted_at')->get()->toArray();
-
-
-
+        //Using softdelete in the model eliminates the need to include it here.
+        $notes = User::find($id)->notes()->get()->toArray();
         return view('home', ['notes' => $notes]);
     }
 
@@ -30,10 +26,12 @@ class MainController extends Controller
     {
         $request->validate(
             [
+                //Validation Rules
                 'text_title' => 'required|min:3|max:200',
                 'text_note' => 'required|min:3|max:3000'
             ],
             [
+                //Personalized Messages
                 'text_title.required' => 'O título é obrigatorio',
                 'text_title.min' => 'O título deve ter pelo menos :min caracteres',
                 'text_title.max' => 'O título deve ter no máximo:max caracteres',
@@ -46,6 +44,8 @@ class MainController extends Controller
 
         $id = session('user.id');
 
+
+        //saving new note
         $note = New Note();
         $note->user_id = $id;
         $note->title = $request->text_title;
@@ -75,10 +75,12 @@ class MainController extends Controller
     public function editNoteSubmit(Request $request){
         $request->validate(
             [
+                //Validation Rules
                 'text_title' => 'required|min:3|max:200',
                 'text_note' => 'required|min:3|max:3000'
             ],
             [
+                //Personalized Messages
                 'text_title.required' => 'O título é obrigatorio',
                 'text_title.min' => 'O título deve ter pelo menos :min caracteres',
                 'text_title.max' => 'O título deve ter no máximo:max caracteres',
@@ -99,6 +101,7 @@ class MainController extends Controller
             return redirect()->route('home');
         }
 
+        //saving edits
         $note = Note::find($id);
         $note->title = $request->text_title;
         $note->text = $request->text_note;
@@ -136,6 +139,7 @@ class MainController extends Controller
         //$note->deleted_at = date('Y-m-d H:i:s');
         //$note->save();
 
+        //Using softdelete on the model will delete using softdelete.
         $note->delete();
 
         return redirect()->route('home');
